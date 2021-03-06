@@ -1,6 +1,0 @@
-[book]
-authors = ["Logan Gorence"]
-language = "en"
-multilingual = false
-src = "src"
-title = "Acasi CTF"
