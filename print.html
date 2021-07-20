@@ -97,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="architecture.html"><strong aria-hidden="true">2.</strong> Architecture</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="architecture.html"><strong aria-hidden="true">2.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="developing.html"><strong aria-hidden="true">3.</strong> Developing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="developing_win.html"><strong aria-hidden="true">3.1.</strong> Windows</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -168,8 +168,62 @@
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <p><strong>NOTE: This documentation is still a work-in-progress!</strong></p>
 <h1 id="architecture"><a class="header" href="#architecture">Architecture</a></h1>
-<p><img src="diagrams/k8s-overview.png" alt="Kubernetes overview" />
-<img src="diagrams/start-challenge-seq-diagram.png" alt="Start challenge sequence diagram" /></p>
+<p><img src="images/k8s-overview.png" alt="Kubernetes overview" />
+<img src="images/start-challenge-seq-diagram.png" alt="Start challenge sequence diagram" /></p>
+<h1 id="developing"><a class="header" href="#developing">Developing</a></h1>
+<p><a href="developing_win.html">Windows</a></p>
+<h1 id="developing-on-windows"><a class="header" href="#developing-on-windows">Developing on Windows</a></h1>
+<p><strong>NOTE: This documentation is still a work-in-progress!</strong></p>
+<p>This guide will introduce you to deploying and working on the Acasi CTF platform on Windows by
+utilizing WSL 2 + Docker Desktop.</p>
+<h1 id="install-wsl-2-and-docker-desktop"><a class="header" href="#install-wsl-2-and-docker-desktop">Install WSL 2 and Docker Desktop</a></h1>
+<p><strong>TODO</strong></p>
+<h1 id="configure-docker-desktop"><a class="header" href="#configure-docker-desktop">Configure Docker Desktop</a></h1>
+<p>To use Docker from within our WSL 2 virtual machine, we need to enable the WSL 2 based engine from
+within Docker Desktop. From the main Docker Desktop window, click the settings gear and check the
+&quot;Use the WSL 2 based engine&quot; option.</p>
+<p><img src="images/docker_wsl2_step1.png" alt="Enable the WSL 2 Docker Engine" /></p>
+<p>Additionally, navigate to &quot;Resources&quot;, then to &quot;WSL Integration&quot;. Check both the &quot;Enable integration
+with my default WSL distro&quot;, and the &quot;Ubuntu-20.04&quot; slider.</p>
+<p><img src="images/docker_wsl2_step2.png" alt="Enable Docker WSL Integration" /></p>
+<p>After both of these steps have been taken, click the &quot;Apply &amp; Restart&quot; button.</p>
+<h1 id="install-kubernetes-utilities"><a class="header" href="#install-kubernetes-utilities">Install Kubernetes utilities</a></h1>
+<p>The following script will download and install a few utilities that we are going to use in the rest
+of this guide and for development on the platform.</p>
+<pre><code>curl https://raw.githubusercontent.com/acasi-ctf/docs/main/scripts/install-k8s-deps.sh | bash
+</code></pre>
+<h1 id="prepare-wsl2"><a class="header" href="#prepare-wsl2">Prepare WSL2</a></h1>
+<h2 id="create-wsl-user"><a class="header" href="#create-wsl-user">Create WSL user</a></h2>
+<p>In your WSL prompt, run the following, substituting USERNAME for the username of your choosing.</p>
+<pre><code>useradd -m USERNAME
+gpasswd --add USERNAME sudo
+</code></pre>
+<p>Edit /etc/wsl.conf and insert the following contents, substituting USERNAME with your chosen username from the prior step.</p>
+<pre><code>[user]
+default=USERNAME
+
+[interop]
+appendWindowsPath=false
+</code></pre>
+<h2 id="configure-minikube"><a class="header" href="#configure-minikube">Configure minikube</a></h2>
+<pre><code>minikube config set driver docker
+minikube start
+</code></pre>
+<h2 id="install-dependencies"><a class="header" href="#install-dependencies">Install dependencies</a></h2>
+<pre><code>sudo apt install make
+</code></pre>
+<h1 id="build-docker-images"><a class="header" href="#build-docker-images">Build Docker images</a></h1>
+<pre><code>make docker
+</code></pre>
+<h1 id="deploy-kubernetes-manifests"><a class="header" href="#deploy-kubernetes-manifests">Deploy Kubernetes manifests</a></h1>
+<pre><code>kubectl create ns ctf
+</code></pre>
+<p><strong>TODO: Clone repo and checkout correct branch</strong></p>
+<pre><code>cd deploy
+./generate_ssh_keys.sh minikube
+kustomize build minikube &gt; minikube.yaml
+kubectl apply -f minikube.yaml
+</code></pre>
 
                     </main>
 
