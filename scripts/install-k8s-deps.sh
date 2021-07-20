@@ -27,3 +27,5 @@ mv linux-amd64/helm .
 chmod +x helm
 rm -r linux-amd64
 rm helm.tar.gz
+
+echo "kubectl, minikube, kustomize, and helm have been installed successfully!"

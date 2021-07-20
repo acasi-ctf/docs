@@ -1,3 +1,3 @@
 # Architecture
-![Kubernetes overview](diagrams/k8s-overview.png)
-![Start challenge sequence diagram](diagrams/start-challenge-seq-diagram.png)
+![Kubernetes overview](images/k8s-overview.png)
+![Start challenge sequence diagram](images/start-challenge-seq-diagram.png)
