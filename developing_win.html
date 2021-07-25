@@ -307,7 +307,9 @@ root@ctf-frontend-f7f4f445f-8tzkr:/app/frontend# exit
 <p>If you see at least a couple of <code>Running upgrade</code> lines, the migration succeeded.</p>
 <h2 id="accessing-the-ui"><a class="header" href="#accessing-the-ui">Accessing the UI</a></h2>
 <p>To access the UI, we need to enable the minikube tunnel. In your WSL shell, run <code>minikube tunnel</code>.
-You should see output similar to the following, requiring your sudo password.</p>
+It should be noted that you will need to have the tunnel running during any development work, it is
+not a permanent operation. You should see output similar to the following, requiring your sudo
+password.</p>
 <pre><code>☁  ~  minikube tunnel
 ❗  The service ingress-nginx-controller requires privileged ports to be exposed: [80 443]
 🔑  sudo permission will be asked for it.
