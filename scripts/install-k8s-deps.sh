@@ -28,4 +28,16 @@ chmod +x helm
 rm -r linux-amd64
 rm helm.tar.gz
 
-echo "kubectl, minikube, kustomize, and helm have been installed successfully!"
+echo "Installing kubectx and kubens..."
+curl -L "https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubectx_v0.9.4_linux_x86_64.tar.gz" --output kubectx.tar.gz
+tar xzf kubectx.tar.gz
+rm kubectx.tar.gz
+curl -L "https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubens_v0.9.4_linux_x86_64.tar.gz" --output kubens.tar.gz
+tar xzf kubens.tar.gz
+rm kubens.tar.gz
+
+echo "Installing final dependencies from apt..."
+apt-get update
+apt-get install -y fzf
+
+echo "kubectl, minikube, kustomize, helm, kubectx, and kubens have been installed successfully!"
