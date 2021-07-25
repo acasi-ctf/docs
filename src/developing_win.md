@@ -190,7 +190,9 @@ If you see at least a couple of `Running upgrade` lines, the migration succeeded
 
 ## Accessing the UI
 To access the UI, we need to enable the minikube tunnel. In your WSL shell, run `minikube tunnel`.
-You should see output similar to the following, requiring your sudo password.
+It should be noted that you will need to have the tunnel running during any development work, it is
+not a permanent operation. You should see output similar to the following, requiring your sudo
+password.
 
 ```
 ☁  ~  minikube tunnel
