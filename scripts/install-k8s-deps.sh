@@ -38,6 +38,7 @@ rm kubens.tar.gz
 
 echo "Installing final dependencies from apt..."
 apt-get update
-apt-get install -y fzf
+apt-get install -y fzf make
 
 echo "kubectl, minikube, kustomize, helm, kubectx, and kubens have been installed successfully!"
+echo "Have fun 🙂"
