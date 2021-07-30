@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - Acasi CTF</title>
+        <title>macOS - Acasi CTF</title>
         
         
 
@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html" class="active"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="architecture.html"><strong aria-hidden="true">2.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="developing.html"><strong aria-hidden="true">3.</strong> Developing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="developing_win.html"><strong aria-hidden="true">3.1.</strong> Windows</a></li><li class="chapter-item expanded "><a href="developing_mac.html"><strong aria-hidden="true">3.2.</strong> macOS</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="architecture.html"><strong aria-hidden="true">2.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="developing.html"><strong aria-hidden="true">3.</strong> Developing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="developing_win.html"><strong aria-hidden="true">3.1.</strong> Windows</a></li><li class="chapter-item expanded "><a href="developing_mac.html" class="active"><strong aria-hidden="true">3.2.</strong> macOS</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -163,19 +163,39 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+                        <h1 id="developing-on-macos"><a class="header" href="#developing-on-macos">Developing on macOS</a></h1>
 <p><strong>NOTE: This documentation is still a work-in-progress!</strong></p>
+<p>This guide will introduce you to deploying and working on the Acasi CTF platform on macOS by
+utilizing minikube.</p>
+<h2 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h2>
+<ul>
+<li>Homebrew</li>
+<li>Docker Desktop (optional, read <a href="#start-minikube">this</a>)</li>
+<li>Xcode</li>
+<li>Xcode Command Line Utilities</li>
+</ul>
+<h1 id="install-utilities"><a class="header" href="#install-utilities">Install utilities</a></h1>
+<pre><code>brew install minikube kubectx kubectl helm kustomize fzf
+</code></pre>
+<h1 id="start-minikube"><a class="header" href="#start-minikube">Start minikube</a></h1>
+<p><strong>macOS beta users</strong>: If you are running the macOS 12.0 Monterey beta, you may need to use the
+Docker driver instead of the HyperKit driver.</p>
+<pre><code>minikube config set driver docker
+</code></pre>
+<p>Start minikube by running the start subcommand.</p>
+<pre><code>minikube start
+</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-
-                        
-                            <a rel="next" href="architecture.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                                <i class="fa fa-angle-right"></i>
+                            <a rel="prev" href="developing_win.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
                             </a>
+                        
+
                         
 
                         <div style="clear: both"></div>
@@ -185,11 +205,11 @@
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-
-                
-                    <a rel="next" href="architecture.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
-                        <i class="fa fa-angle-right"></i>
+                    <a rel="prev" href="developing_win.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
                     </a>
+                
+
                 
             </nav>
 
