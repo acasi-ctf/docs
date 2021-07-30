@@ -167,10 +167,12 @@
 <p><strong>NOTE: This documentation is still a work-in-progress!</strong></p>
 <p>This guide will introduce you to deploying and working on the Acasi CTF platform on macOS by
 utilizing minikube.</p>
+<p><strong>This guide assumes you are using an Intel Mac, these instructions have not been tested on an Apple
+Silicon Mac, yet.</strong></p>
 <h2 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h2>
 <ul>
 <li>Homebrew</li>
-<li>Docker Desktop (optional, read <a href="#start-minikube">this</a>)</li>
+<li>Docker Desktop (optional, read <a href="#macos-beta-users">this</a>)</li>
 <li>Xcode</li>
 <li>Xcode Command Line Utilities</li>
 </ul>
@@ -178,10 +180,13 @@ utilizing minikube.</p>
 <pre><code>brew install minikube kubectx kubectl helm kustomize fzf
 </code></pre>
 <h1 id="start-minikube"><a class="header" href="#start-minikube">Start minikube</a></h1>
-<p><strong>macOS beta users</strong>: If you are running the macOS 12.0 Monterey beta, you may need to use the
-Docker driver instead of the HyperKit driver.</p>
+<h2 id="warning-macos-beta-users"><a class="header" href="#warning-macos-beta-users">Warning: macOS beta users</a></h2>
+<p>If you are running the macOS 12.0 Monterey beta, you may need to use the Docker driver instead of
+the HyperKit driver, which is the default. If you do not, you might hit an error where minikube
+times out while trying to start the VM. Do this by running the following command before starting it.</p>
 <pre><code>minikube config set driver docker
 </code></pre>
+<h2 id="starting-minikube"><a class="header" href="#starting-minikube">Starting minikube</a></h2>
 <p>Start minikube by running the start subcommand.</p>
 <pre><code>minikube start
 </code></pre>
