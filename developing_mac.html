@@ -172,7 +172,7 @@ Silicon Mac, yet.</strong></p>
 <h2 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h2>
 <ul>
 <li>Homebrew</li>
-<li>Docker Desktop (optional, read <a href="#macos-beta-users">this</a>)</li>
+<li>Docker Desktop (optional, read <a href="#warning-macos-beta-users">this</a>)</li>
 <li>Xcode</li>
 <li>Xcode Command Line Utilities</li>
 </ul>
@@ -190,6 +190,107 @@ times out while trying to start the VM. Do this by running the following command
 <p>Start minikube by running the start subcommand.</p>
 <pre><code>minikube start
 </code></pre>
+<h1 id="kubernetes-pre-requisites"><a class="header" href="#kubernetes-pre-requisites">Kubernetes pre-requisites</a></h1>
+<h2 id="add-bitnami-helm-repo"><a class="header" href="#add-bitnami-helm-repo">Add Bitnami Helm repo</a></h2>
+<pre><code>helm repo add bitnami https://charts.bitnami.com/bitnami
+</code></pre>
+<h2 id="install-ingress-controller"><a class="header" href="#install-ingress-controller">Install Ingress controller</a></h2>
+<p>An ingress controller gives us the ability to run one web server which will proxy to one or more
+backend servers, allowing us to share a single hostname between those multiple backend servers.</p>
+<pre><code>kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.48.1/deploy/static/provider/cloud/deploy.yaml
+</code></pre>
+<h2 id="add-hosts-entry"><a class="header" href="#add-hosts-entry">Add hosts entry</a></h2>
+<p>We need to add an entry to our local hosts file so that the &quot;ctf&quot; domain directs to our local web
+server. The hosts files on macOS is located at /etc/hosts. As this is a system file, you must edit
+it as an administrator.</p>
+<p>The contents we want to add are as follows, do not remove anything from the file.</p>
+<pre><code>127.0.0.1 ctf
+</code></pre>
+<h1 id="clone-and-build-source"><a class="header" href="#clone-and-build-source">Clone and build source</a></h1>
+<h2 id="clone-source"><a class="header" href="#clone-source">Clone source</a></h2>
+<pre><code># Clone source from Git using SSH
+git clone git@github.com:acasi-ctf/ctf.git
+
+# Alternatively, use HTTPS if you don't have an SSH key installed
+git clone https://github.com/acasi-ctf/ctf.git
+</code></pre>
+<p><strong>Temporary step: check out dev_docs_branch</strong></p>
+<pre><code>cd ctf
+git checkout dev_docs
+</code></pre>
+<h2 id="build-docker-images"><a class="header" href="#build-docker-images">Build Docker images</a></h2>
+<p>Now, build the Docker images for the platform. Ensure you're in the directory of the ctf repository.</p>
+<pre><code># Activate the Docker environment
+eval $(minikube -p minikube docker-env)
+
+# Build docker images
+make docker
+</code></pre>
+<h1 id="deploy"><a class="header" href="#deploy">Deploy</a></h1>
+<h2 id="create-namespace"><a class="header" href="#create-namespace">Create namespace</a></h2>
+<p>Kubernetes namespaces are a method of isolating resources, and is good practice to keep separate
+projects in different namespaces for this reason.</p>
+<pre><code># Create ctf namespace
+kubectl create ns ctf
+
+# Switch to new namespace
+kubens ctf
+</code></pre>
+<h2 id="create-and-deploy-manifests"><a class="header" href="#create-and-deploy-manifests">Create and deploy manifests</a></h2>
+<pre><code>cd deploy
+
+./generate_ssh_keys.sh minikube
+cd minikube
+helm install postgres bitnami/postgresql --values postgres-values.yaml
+cd ..
+
+kustomize build minikube &gt; minikube.yaml
+kubectl apply -f minikube.yaml
+</code></pre>
+<h2 id="migrate-the-database"><a class="header" href="#migrate-the-database">Migrate the database</a></h2>
+<p><strong>This is a potential task for improvement.</strong></p>
+<p>Currently, we need to manually migrate the PostgreSQL database. This is a fairly simple procedure,
+but ideally would be automated in the future.</p>
+<p>We need to get a shell for the pod that runs the frontend API. List the pods running in the ctf
+namespace like so.</p>
+<pre><code>☁  ~  kubectl get pods
+NAME                             READY   STATUS    RESTARTS   AGE
+ctf-frontend-f7f4f445f-bkxtc     1/1     Running   0          4m41s
+ctf-operator-7d9868665-95xxh     1/1     Running   0          4m41s
+ctf-termproxy-7b9858f47b-6gflw   1/1     Running   0          4m41s
+ctf-ui-74d56f8d-dljnz            1/1     Running   0          4m40s
+postgres-postgresql-0            1/1     Running   0          5m18s
+</code></pre>
+<p>Locate the pod that starts with <code>ctf-frontend</code>. Make a note of the full name, in our case it is
+<code>ctf-frontend-584b4b9874-26vxx</code>. Execute a bash shell in the pod and run the commands as provided.</p>
+<pre><code>☁  ~  kubectl exec -it ctf-frontend-f7f4f445f-bkxtc -- /bin/bash
+root@ctf-frontend-f7f4f445f-bkxtc:/app# cd frontend
+root@ctf-frontend-f7f4f445f-bkxtc:/app/frontend# flask db upgrade
+/usr/local/lib/python3.9/site-packages/flask_sqlalchemy/__init__.py:872: FSADeprecationWarning: SQLALCHEMY_TRACK_MODIFICATIONS adds significant overhead and will be disabled by default in the future.  Set it to True or False to suppress this warning.
+  warnings.warn(FSADeprecationWarning(
+/usr/local/lib/python3.9/site-packages/jose/backends/cryptography_backend.py:18: CryptographyDeprecationWarning: int_from_bytes is deprecated, use int.from_bytes instead
+  from cryptography.utils import int_from_bytes, int_to_bytes
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -&gt; 6e85efd406c7, Initial migrations
+INFO  [alembic.runtime.migration] Running upgrade 6e85efd406c7 -&gt; 5213f9e65a8c, Add documentation table and minor adjustments
+</code></pre>
+<p>If you see at least a couple of <code>Running upgrade</code> lines, the migration succeeded.</p>
+<h2 id="accessing-the-ui"><a class="header" href="#accessing-the-ui">Accessing the UI</a></h2>
+<p>To access the UI, we need to enable the minikube tunnel. In your WSL shell, run <code>minikube tunnel</code>.
+It should be noted that you will need to have the tunnel running during any development work, it is
+not a permanent operation. You should see output similar to the following, requiring your sudo
+password.</p>
+<pre><code>☁  ~  minikube tunnel
+❗  The service ingress-nginx-controller requires privileged ports to be exposed: [80 443]
+🔑  sudo permission will be asked for it.
+🏃  Starting tunnel for service ingress-nginx-controller.
+[sudo] password for lgorence:
+</code></pre>
+<p>The UI should now be accessible from your Windows machine by navigating to https://ctf/. As this is
+running locally (nor is it a valid TLD), you will not have a valid SSL certificate, and your browser
+will likely require you to accept the security risk. Brave may have issues with this, not allowing
+you to bypass the risk.</p>
 
                     </main>
 
