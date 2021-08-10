@@ -177,7 +177,7 @@ Locate the pod that starts with `ctf-frontend`. Make a note of the full name, in
 ```
 ☁  ~  kubectl exec -it ctf-frontend-584b4b9874-26vxx -- /bin/bash
 root@ctf-frontend-584b4b9874-26vxx:/app# cd frontend
-root@ctf-frontend-584b4b9874-26vxx:/app/frontend# flask db migrate
+root@ctf-frontend-584b4b9874-26vxx:/app/frontend# flask db upgrade
 [...]
 INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
 INFO  [alembic.runtime.migration] Will assume transactional DDL.
