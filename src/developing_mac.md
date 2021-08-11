@@ -160,7 +160,7 @@ password.
 [sudo] password for lgorence:
 ```
 
-The UI should now be accessible from your Windows machine by navigating to https://ctf/. As this is
+The UI should now be accessible from macOS by navigating to https://ctf/. As this is
 running locally (nor is it a valid TLD), you will not have a valid SSL certificate, and your browser
-will likely require you to accept the security risk. Brave may have issues with this, not allowing
-you to bypass the risk.
+will likely require you to accept the security risk. Brave and Safari may have issues with this, not
+allowing you to bypass the risk or certain features not working correctly.
