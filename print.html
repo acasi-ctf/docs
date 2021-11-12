@@ -97,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="architecture.html"><strong aria-hidden="true">2.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="developing.html"><strong aria-hidden="true">3.</strong> Developing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="developing_win.html"><strong aria-hidden="true">3.1.</strong> Windows</a></li><li class="chapter-item expanded "><a href="developing_mac.html"><strong aria-hidden="true">3.2.</strong> macOS</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="architecture.html"><strong aria-hidden="true">2.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="developing.html"><strong aria-hidden="true">3.</strong> Developing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="developing_win.html"><strong aria-hidden="true">3.1.</strong> Windows</a></li><li class="chapter-item expanded "><a href="developing_mac.html"><strong aria-hidden="true">3.2.</strong> macOS</a></li></ol></li><li class="chapter-item expanded "><a href="challenges.html"><strong aria-hidden="true">4.</strong> Challenges</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="creating_challenges.html"><strong aria-hidden="true">4.1.</strong> Creating</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -460,6 +460,156 @@ password.</p>
 running locally (nor is it a valid TLD), you will not have a valid SSL certificate, and your browser
 will likely require you to accept the security risk. Brave and Safari may have issues with this, not
 allowing you to bypass the risk or certain features not working correctly.</p>
+<h1 id="introduction-to-challenges"><a class="header" href="#introduction-to-challenges">Introduction to Challenges</a></h1>
+<p>Challenge sets and challenges are the basis of the CTF platform. Challenge sets are groups of
+similar challenges, and challenges represent an individual problem or task to be performed by the
+user.</p>
+<h2 id="challenge-environments"><a class="header" href="#challenge-environments">Challenge environments</a></h2>
+<p>A challenge environment is defined as the backend representation of a single instance of a challenge
+that a user has created. Environments use containers running on Kubernetes to provide various
+services for the user. One such instance might be that a user wants to learn more about a Linux
+environment and commands. In this case, the challenge would provide an SSH server that the Termproxy
+component connects to and would show this in the user interface as a terminal. Alternatively, it is
+also possible for a challenge environment to expose a web server in a similar way, and this may be
+used for SQL injection, XSS attacks, etc.</p>
+<h2 id="how-do-i-create-a-challenge"><a class="header" href="#how-do-i-create-a-challenge">How do I create a challenge?</a></h2>
+<p>See the <a href="creating_challenges.html">creating challenges</a> page for more information on this topic.</p>
+<h1 id="creating-challenges"><a class="header" href="#creating-challenges">Creating challenges</a></h1>
+<p><strong>NOTE: This documentation is still a work-in-progress!</strong></p>
+<p>This article covers the relevant knowledge on how to create a terminal-based challenge. It is
+expected that the reader has some familiarity with Linux, Docker and Kubernetes. These skills will
+be needed to effectively build, run, and troubleshoot any issues you may have during this process.</p>
+<h2 id="building-a-container"><a class="header" href="#building-a-container">Building a container</a></h2>
+<p>All challenge environments utilize at least one container running in Kubernetes. Because this
+article assumes that the reader wants to create a terminal-based challenge (rather than a web-based
+one), you will need to familiarize yourself with the penimage. The penimage is effectively a
+preconfigured Docker image of which all of our terminal-based challenges derive from. It utilizes
+an Ubuntu 20.04 LTS base. The reason it is recommended to use this is that it preinstalls an OpenSSH 
+server with a start script that will inject the public key of the Termproxy microservice.</p>
+<h3 id="example"><a class="header" href="#example">Example</a></h3>
+<p>The following is an example of a simple container which adds some Python scripts.</p>
+<pre><code class="language-dockerfile">FROM ghcr.io/acasi-ctf/ctf/penimage:latest
+
+COPY challenges/ciphers/challenges/caesar-cipher/code/Caesar-cipher.py /home/player
+COPY challenges/ciphers/challenges/comprehensive-challenge/code/Mixed-Challenge-1.py /home/player
+COPY challenges/ciphers/challenges/letter-to-number/code/Letter-to-Number.py /home/player
+COPY challenges/ciphers/challenges/morse-code/code/Morse_code.py /home/player
+COPY challenges/ciphers/challenges/reverse-cipher/code/Reverse.py /home/player
+</code></pre>
+<p>As you may notice, the user that is used in the container is <strong>player</strong>, and their home directory is
+located at <code>/home/player</code>.</p>
+<h2 id="challenge-directory-structure"><a class="header" href="#challenge-directory-structure">Challenge directory structure</a></h2>
+<p>To create a challenge set and children challenges, you must have a directory for that dedicated
+challenge set. The directory structure might look something like below. Each file is annotated with
+a brief comment describing briefly what it is.</p>
+<pre><code>challenges/kali/challenge-set.json                           # Challenge set definition (JSON)
+challenges/kali/challenges/strings/template.yaml             # Kubernetes CRD (YAML)
+challenges/kali/challenges/strings/kubernetes.json           # Kubernetes provisioner (JSON)
+challenges/kali/challenges/strings/challenge.json            # Challenge definition (JSON)
+challenges/kali/challenges/strings/docs/StringsDocument.md   # Documentation (Markdown)
+challenges/kali/challenges/strings/src/lock.cpp              # Source code for challenge (C++)
+challenges/kali/challenges/binwalk/template.yaml             # Kubernetes CRD (YAML)
+challenges/kali/challenges/binwalk/kubernetes.json           # Kubernetes provisioner (JSON)
+challenges/kali/challenges/binwalk/challenge.json            # Challenge definition (JSON)
+challenges/kali/challenges/binwalk/docs/BinwalkDocument.md   # Documentation (Markdown)
+</code></pre>
+<h2 id="challenge-set-definition"><a class="header" href="#challenge-set-definition">Challenge set definition</a></h2>
+<p>A challenge set definition contains unique identifiers and human-readable descriptor fields. It also
+links to each challenge by the name of the directory.</p>
+<h3 id="fields"><a class="header" href="#fields">Fields</a></h3>
+<table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>id</td><td>UUIDv4</td><td>Unique identifier for this challenge set. This MUST be unique amongst all other challenge sets and challenges.</td></tr>
+<tr><td>slug</td><td>string</td><td>Unique slug name for this challenge set. This MUST be unique amongst all other challenge sets.</td></tr>
+<tr><td>name</td><td>string</td><td>Descriptive name that is displayed in the user interface.</td></tr>
+<tr><td>description</td><td>string</td><td>Description of this challenge set displayed in the user interface.</td></tr>
+<tr><td>version</td><td>string</td><td>Version of this challenge.</td></tr>
+<tr><td>challenges</td><td>array of string</td><td>Array of strings that reference each challenge directory to be included in this challenge set. Use lowercases and dashes for these names.</td></tr>
+</tbody></table>
+<h3 id="example-1"><a class="header" href="#example-1">Example</a></h3>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;4040a75a-037c-44c0-b1e2-bdcc6ceaddb0&quot;,
+  &quot;slug&quot;: &quot;kali&quot;,
+  &quot;name&quot;: &quot;Kali&quot;,
+  &quot;description&quot;: &quot;Challenge set that focuses on Kali Linux&quot;,
+  &quot;version&quot;: &quot;0.1.0&quot;,
+  &quot;challenges&quot;: [
+    &quot;strings&quot;,
+    &quot;binwalk&quot;
+  ]
+}
+</code></pre>
+<h2 id="challenge-definition"><a class="header" href="#challenge-definition">Challenge definition</a></h2>
+<p>A challenge definition contains unique identifiers, human-readable descriptor fields, and relevant
+information required by the platform to build and start the environment.</p>
+<h3 id="fields-1"><a class="header" href="#fields-1">Fields</a></h3>
+<table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>id</td><td>UUIDv4</td><td>Unique identifier for this challenge. This MUST be unique amongst all other challenge sets and challenges.</td></tr>
+<tr><td>slug</td><td>string</td><td>Unique slug name for this challenge. This MUST be unique amongst all other challenge.</td></tr>
+<tr><td>name</td><td>string</td><td>Descriptive name that is displayed in the user interface.</td></tr>
+<tr><td>description</td><td>string</td><td>Description of this challenge set displayed in the user interface.</td></tr>
+<tr><td>provisioner</td><td>object</td><td>Object which contains field type, which can be either none or kubernetes. If kubernetes, kubernetes.json will be read as part of the provisioning process.</td></tr>
+<tr><td>documentation</td><td>array of object</td><td>Array of objects which contain name and path fields, name is descriptive name for user interface and path is the path relative to the challenge.json file.</td></tr>
+</tbody></table>
+<h3 id="example-2"><a class="header" href="#example-2">Example</a></h3>
+<pre><code class="language-json">{
+  &quot;id&quot;: &quot;0c73d010-b360-4116-ba6f-92dad43c3e57&quot;,
+  &quot;slug&quot;: &quot;strings&quot;,
+  &quot;name&quot;: &quot;strings&quot;,
+  &quot;description&quot;: &quot;This is a challenge that demonstrates strings tool&quot;,
+  &quot;provisioner&quot;: {
+    &quot;type&quot;: &quot;kubernetes&quot;
+  },
+  &quot;documentation&quot;: [
+    {
+      &quot;name&quot;: &quot;StringsDocument&quot;,
+      &quot;path&quot;: &quot;docs/StringsDocument.md&quot;
+    }
+  ]
+}
+</code></pre>
+<h2 id="kubernetes-provisioner"><a class="header" href="#kubernetes-provisioner">Kubernetes provisioner</a></h2>
+<p>A challenge which utilizes Kubernetes as a provisioning backend (currently the only one supported),
+will require a kubernetes.json file in the same directory as challenge.json.</p>
+<h3 id="fields-2"><a class="header" href="#fields-2">Fields</a></h3>
+<table><thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead><tbody>
+<tr><td>templatePath</td><td>UUIDv4</td><td>Relative path to a YAML file containing the EnvironmentTemplate CRD for this challenge.</td></tr>
+<tr><td>templateCRDVersion</td><td>string enum</td><td>Version of the template CRD. This currently only has one value, which is v1alpha1. This maps directly to the versions of the CRD in Kubernetes.</td></tr>
+</tbody></table>
+<h3 id="example-3"><a class="header" href="#example-3">Example</a></h3>
+<pre><code class="language-json">{
+  &quot;templatePath&quot;: &quot;template.yaml&quot;,
+  &quot;templateCRDVersion&quot;: &quot;v1alpha1&quot;
+}
+</code></pre>
+<h2 id="kubernetes-crd"><a class="header" href="#kubernetes-crd">Kubernetes CRD</a></h2>
+<p>A challenge which utilizes Kubernetes as a provisioning backend will require this environment
+template kind of resource. It combines the specs for one or more pods, and zero or more services and
+ingresses.</p>
+<h3 id="example-4"><a class="header" href="#example-4">Example</a></h3>
+<pre><code class="language-yaml">apiVersion: ctf.acasi.info/v1alpha1
+kind: EnvTemplate
+metadata:
+  name: kali-strings
+spec:
+  pods:
+    - metadata:
+        name: penimage
+        labels:
+          app: penimage
+      spec:
+        containers:
+          - name: penimage
+            image: ghcr.io/acasi-ctf/challenges/kali/strings:latest
+  services:
+    - metadata:
+        name: penimage-termproxy
+      spec:
+        selector:
+          app: penimage
+        ports:
+          - port: 22
+            ctfExpose: Termproxy
+</code></pre>
 
                     </main>
 

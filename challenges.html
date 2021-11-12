@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Developing - Acasi CTF</title>
+        <title>Challenges - Acasi CTF</title>
         
         
 
@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="architecture.html"><strong aria-hidden="true">2.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="developing.html" class="active"><strong aria-hidden="true">3.</strong> Developing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="developing_win.html"><strong aria-hidden="true">3.1.</strong> Windows</a></li><li class="chapter-item expanded "><a href="developing_mac.html"><strong aria-hidden="true">3.2.</strong> macOS</a></li></ol></li><li class="chapter-item expanded "><a href="challenges.html"><strong aria-hidden="true">4.</strong> Challenges</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="creating_challenges.html"><strong aria-hidden="true">4.1.</strong> Creating</a></li></ol></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="architecture.html"><strong aria-hidden="true">2.</strong> Architecture</a></li><li class="chapter-item expanded "><a href="developing.html"><strong aria-hidden="true">3.</strong> Developing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="developing_win.html"><strong aria-hidden="true">3.1.</strong> Windows</a></li><li class="chapter-item expanded "><a href="developing_mac.html"><strong aria-hidden="true">3.2.</strong> macOS</a></li></ol></li><li class="chapter-item expanded "><a href="challenges.html" class="active"><strong aria-hidden="true">4.</strong> Challenges</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="creating_challenges.html"><strong aria-hidden="true">4.1.</strong> Creating</a></li></ol></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -163,24 +163,33 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="developing"><a class="header" href="#developing">Developing</a></h1>
-<ul>
-<li><a href="developing_win.html">Windows</a></li>
-<li><a href="developing_mac.html">macOS</a></li>
-</ul>
+                        <h1 id="introduction-to-challenges"><a class="header" href="#introduction-to-challenges">Introduction to Challenges</a></h1>
+<p>Challenge sets and challenges are the basis of the CTF platform. Challenge sets are groups of
+similar challenges, and challenges represent an individual problem or task to be performed by the
+user.</p>
+<h2 id="challenge-environments"><a class="header" href="#challenge-environments">Challenge environments</a></h2>
+<p>A challenge environment is defined as the backend representation of a single instance of a challenge
+that a user has created. Environments use containers running on Kubernetes to provide various
+services for the user. One such instance might be that a user wants to learn more about a Linux
+environment and commands. In this case, the challenge would provide an SSH server that the Termproxy
+component connects to and would show this in the user interface as a terminal. Alternatively, it is
+also possible for a challenge environment to expose a web server in a similar way, and this may be
+used for SQL injection, XSS attacks, etc.</p>
+<h2 id="how-do-i-create-a-challenge"><a class="header" href="#how-do-i-create-a-challenge">How do I create a challenge?</a></h2>
+<p>See the <a href="creating_challenges.html">creating challenges</a> page for more information on this topic.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="architecture.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="developing_mac.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="developing_win.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="creating_challenges.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -192,13 +201,13 @@
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="architecture.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="developing_mac.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a rel="next" href="developing_win.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="creating_challenges.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
