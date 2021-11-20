@@ -157,3 +157,60 @@ spec:
           - port: 22
             ctfExpose: Termproxy
 ```
+
+## Building the challenge set
+To distribute our challenges, we build a ZIP file that contains all the JSON files that are listed
+above to simplify the process. There is a tool that is written in Go to build these ZIP files, as
+well as do some basic validation on the JSON to catch some of the most common schema validation
+errors.
+
+To utilize this tool, you must have Go installed (tested with Go v1.16 and above). This section
+assumes that you are using macOS or Linux, it has not been tested on Windows.
+
+All of these commands are run from the root of our repository, if your challenges are stored
+elsewhere.
+
+```
+# List the challenges directory to show it exists.
+☁  ctf [main] ls -la challenges
+drwxr-xr-x - dschrute 25 May 19:09 ciphers
+drwxr-xr-x - dschrute  9 Nov 19:40 games
+drwxr-xr-x - dschrute  9 Nov 19:40 internal
+drwxr-xr-x - dschrute 19 Nov 15:55 pentesting
+drwxr-xr-x - dschrute 16 Nov 17:56 schemas
+drwxr-xr-x - dschrute 25 May 19:09 web-based
+
+# Alias `chl` to run the chl main file with `go run`.
+☁  ctf [main] alias chl=go\ run\ cmd/chl/main.go
+
+# Build the challenge, first positional argument for the build subcommand is the directory path,
+#  the second is the output ZIP path.
+☁  ctf [main] chl build challenges/pentesting pentesting.zip
+Validated challenge set file
+Validated 'strings' challenge file
+Validated 'binwalk' challenge file
+Validated 'hash-identifier' challenge file
+Validated 'hashcat' challenge file
+
+# Demonstrate the new ZIP file output.
+☁  ctf [main] ls -la pentesting.zip
+.rwxr-xr-x 18k dschrute 19 Nov 16:50 pentesting.zip
+```
+
+## Uploading the challenge set
+This section requires that you are an administrator for the platform instance you are uploading to.
+When visiting the web UI, you will see the following option in the sidebar if you have the correct
+role as mentioned.
+
+![Sidebar showing the "Upload Challenge Set" option](images/admin_upload_cs_sidebar.png)
+
+Click this option, and you will find yourself on a very basic page which has two buttons. One is to
+choose a file, and the other is to upload. Click "choose file", then browse and select the challenge
+set ZIP you would like to upload to create or update. Afterwards, click the "upload" button.
+
+![Screenshot of the "Upload Challenge Set" page](images/admin_upload_cs_page.png)
+
+After clicking the upload button, if the operation was successful, you will see an alert like the
+following.
+
+![Screenshot showing successful upload](images/admin_upload_cs_success.png)
